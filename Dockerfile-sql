@@ -1,0 +1,14 @@
+# Use the official SQL Server 2019 image
+FROM mcr.microsoft.com/mssql/server:2022-latest AS sqlserver
+
+# Environment variables for SQL Server configuration
+ENV ACCEPT_EULA=Y
+ENV SA_PASSWORD=StrongPassw0rd
+
+# Copy SQL Server initialization script
+COPY init.sql /usr/src/app/
+COPY init.sh /usr/src/app/
+WORKDIR /usr/src/app
+
+# Run the SQL Server initialization script
+ENTRYPOINT /opt/mssql/bin/sqlservr & /usr/src/app/init.sh

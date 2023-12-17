@@ -44,6 +44,8 @@ namespace InterviewTest
 
             ProcessCarDealershipExample();
 
+            // while(true);
+
             Console.ReadKey();
         }
 
