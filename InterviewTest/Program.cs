@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Data.SqlClient;
+using System;
 using System.Linq;
 using InterviewTest.Customers;
 using InterviewTest.Orders;
@@ -11,6 +12,8 @@ namespace InterviewTest
     {
         // private static readonly OrderRepository orderRepo = new OrderRepository();
         // private static readonly ReturnRepository returnRepo = new ReturnRepository();
+
+        private static SqlConnection connection;
 
         static void Main(string[] args)
         {
@@ -39,6 +42,15 @@ namespace InterviewTest
             // ------------------------
             // 1: Create unit tests for the ordering and return process.
             // 2: Create a database and refactor all repositories to save/update/pull from it.
+
+            string connectionString = "Server=localhost,1433;Database=InterviewTest;User Id=SA;Password=StrongPassw0rd;Encrypt=False;";
+
+            connection = new SqlConnection(connectionString);
+
+            if (connection.State != System.Data.ConnectionState.Open)
+            {
+                connection.Open();
+            }
 
             ProcessTruckAccessoriesExample();
 
@@ -83,15 +95,15 @@ namespace InterviewTest
 
         private static ICustomer GetTruckAccessoriesCustomer()
         {
-            OrderRepository orderRepo = new OrderRepository();
-            ReturnRepository returnRepo = new ReturnRepository();
+            OrderRepository orderRepo = new OrderRepository(connection);
+            ReturnRepository returnRepo = new ReturnRepository(connection);
             return new TruckAccessoriesCustomer(orderRepo, returnRepo);
         }
 
         private static ICustomer GetCarDealershipCustomer()
         {
-            OrderRepository orderRepo = new OrderRepository();
-            ReturnRepository returnRepo = new ReturnRepository();
+            OrderRepository orderRepo = new OrderRepository(connection);
+            ReturnRepository returnRepo = new ReturnRepository(connection);
             return new CarDealershipCustomer(orderRepo, returnRepo);
         }
 

@@ -22,16 +22,26 @@ CREATE TABLE [dbo].[OrderProducts] (
     [Id] INT IDENTITY(1,1) PRIMARY KEY,
     [OrderNumber] VARCHAR(50),
     [ProductNumber] VARCHAR(50),
-    CONSTRAINT existing_product FOREIGN KEY ([ProductNumber]) REFERENCES [dbo].[Product] ([ProductNumber]),
-    CONSTRAINT existing_order FOREIGN KEY ([OrderNumber]) REFERENCES [dbo].[Orders] ([OrderNumber])
+    CONSTRAINT existing_product FOREIGN KEY ([ProductNumber]) REFERENCES [dbo].[Product] ([ProductNumber]) ON DELETE CASCADE,
+    CONSTRAINT existing_order FOREIGN KEY ([OrderNumber]) REFERENCES [dbo].[Orders] ([OrderNumber]) ON DELETE CASCADE
 );
 
-CREATE TABLE [dbo].[Return] (
+CREATE TABLE [dbo].[Returns] (
+    [ReturnNumber] VARCHAR(50) PRIMARY KEY,
+    [CustomerName] VARCHAR(50),
+    [OriginalOrder] VARCHAR(50),
+    [Timestamp] DATETIME DEFAULT GETDATE(),
+    CONSTRAINT existing_order_return FOREIGN KEY ([OriginalOrder]) REFERENCES [dbo].[Orders] ([OrderNumber]) ON DELETE CASCADE
+);
+
+CREATE TABLE [dbo].[ReturnProducts] (
     [Id] INT IDENTITY(1,1) PRIMARY KEY,
-    [ReturnOrder] VARCHAR(50),
+    [OriginalOrder] VARCHAR(50),
     [ProductNumber] VARCHAR(50),
-    CONSTRAINT existing_product_return FOREIGN KEY ([ProductNumber]) REFERENCES [dbo].[Product] ([ProductNumber]),
-    CONSTRAINT existing_order_return FOREIGN KEY ([ReturnOrder]) REFERENCES [dbo].[Orders] ([OrderNumber])
+    [ReturnNumber] VARCHAR(50),
+    CONSTRAINT existing_product_return FOREIGN KEY ([ProductNumber]) REFERENCES [dbo].[Product] ([ProductNumber]) ON DELETE CASCADE,
+    CONSTRAINT existing_return FOREIGN KEY ([ReturnNumber]) REFERENCES [dbo].[Returns] ([ReturnNumber]) ON DELETE CASCADE
+
 );
 
 INSERT INTO [dbo].[Product] ([ProductNumber], [SellingPrice]) VALUES
